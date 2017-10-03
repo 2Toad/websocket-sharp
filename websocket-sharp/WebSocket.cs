@@ -3125,56 +3125,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the specified file using the WebSocket connection.
-    /// </summary>
-    /// <remarks>
-    /// The file is sent as the binary data.
-    /// </remarks>
-    /// <param name="fileInfo">
-    /// A <see cref="FileInfo"/> that specifies the file to send.
-    /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="fileInfo"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   The file does not exist.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The file could not be opened.
-    ///   </para>
-    /// </exception>
-    public void Send (FileInfo fileInfo)
-    {
-      if (_readyState != WebSocketState.Open) {
-        var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (fileInfo == null)
-        throw new ArgumentNullException ("fileInfo");
-
-      if (!fileInfo.Exists) {
-        var msg = "The file does not exist.";
-        throw new ArgumentException (msg, "fileInfo");
-      }
-
-      FileStream stream;
-      if (!fileInfo.TryOpenRead (out stream)) {
-        var msg = "The file could not be opened.";
-        throw new ArgumentException (msg, "fileInfo");
-      }
-
-      send (Opcode.Binary, stream);
-    }
-
-    /// <summary>
     /// Sends <paramref name="data"/> using the WebSocket connection.
     /// </summary>
     /// <param name="data">
@@ -3324,74 +3274,6 @@ namespace WebSocketSharp
         throw new ArgumentNullException ("data");
 
       sendAsync (Opcode.Binary, new MemoryStream (data), completed);
-    }
-
-    /// <summary>
-    /// Sends the specified file asynchronously using the WebSocket connection.
-    /// </summary>
-    /// <remarks>
-    ///   <para>
-    ///   The file is sent as the binary data.
-    ///   </para>
-    ///   <para>
-    ///   This method does not wait for the send to be complete.
-    ///   </para>
-    /// </remarks>
-    /// <param name="fileInfo">
-    /// A <see cref="FileInfo"/> that specifies the file to send.
-    /// </param>
-    /// <param name="completed">
-    ///   <para>
-    ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
-    ///   if not needed.
-    ///   </para>
-    ///   <para>
-    ///   The delegate invokes the method called when the send is complete.
-    ///   </para>
-    ///   <para>
-    ///   <c>true</c> is passed to the method if the send has done with
-    ///   no error; otherwise, <c>false</c>.
-    ///   </para>
-    /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="fileInfo"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   The file does not exist.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The file could not be opened.
-    ///   </para>
-    /// </exception>
-    public void SendAsync (FileInfo fileInfo, Action<bool> completed)
-    {
-      if (_readyState != WebSocketState.Open) {
-        var msg = "The current state of the connection is not Open.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (fileInfo == null)
-        throw new ArgumentNullException ("fileInfo");
-
-      if (!fileInfo.Exists) {
-        var msg = "The file does not exist.";
-        throw new ArgumentException (msg, "fileInfo");
-      }
-
-      FileStream stream;
-      if (!fileInfo.TryOpenRead (out stream)) {
-        var msg = "The file could not be opened.";
-        throw new ArgumentException (msg, "fileInfo");
-      }
-
-      sendAsync (Opcode.Binary, stream, completed);
     }
 
     /// <summary>
